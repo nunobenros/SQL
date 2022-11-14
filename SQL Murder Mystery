@@ -1,0 +1,109 @@
+/*  https://mystery.knightlab.com/walkthrough.html
+select * from crime_scene_report
+where date = 20180115
+and lower(city) = 'sql city'
+and type = 'murder' 
+*/
+select *,
+    max(address_number) as Max_number
+from person
+where address_street_name= 'Northwestern Dr'
+/*Answer: the first witness is
+id	name	license_id	address_number	address_street_name	ssn	Max_number
+14887	Morty Schapiro	118009	4919	Northwestern Dr	111564949	4919
+
+/* SELECT * FROM person 
+WHERE address_street_name = 'Northwestern Dr' 
+ORDER BY address_number DESC LIMIT 1;
+
+-----------------------------------------
+select * from crime_scene_report
+where date = 20180115
+and lower(city) = 'sql city'
+and type = 'murder' 
+
+*/
+select *
+from person
+where address_street_name= 'Franklin Ave'
+and name like '%Annabel%'
+/* 
+id	name	license_id	address_number	address_street_name	ssn
+16371	Annabel Miller	490173	103	Franklin Ave	318771143
+/*
+
+------------------------------------------------------------
+Write a query that shows the interview transcripts for our two subjects
+SELECT 
+i.transcript,
+p.name
+FROM  interview i
+JOIN person p
+ON i.person_id = p.id
+WHERE p.id= 14887 or p.id=16371
+
+
+R:
+transcript	name
+I heard a gunshot and then saw a man run out. He had a "Get Fit Now Gym" bag. The membership number on the bag started with "48Z". Only gold members have those bags. The man got into a car with a plate that included "H42W".	Morty Schapiro
+I saw the murder happen, and I recognized the killer from my gym when I was working out last week on January the 9th.	Annabel Miller
+--------------------------------------------------------------------------------
+
+Go Get 'em!
+Find the murderer!
+
+SELECT * ,
+chk.check_in_date
+FROM GET_FIT_NOW_MEMBER gfn
+JOIN  GET_FIT_NOW_CHECK_IN chk
+ON  gfn.id= chk.membership_id
+WHERE gfn.id LIKE '48Z%'
+AND gfn.membership_status= 'gold'
+and chk.check_in_date = 20180109
+	
+
+SELECT 
+p.name
+FROM drivers_license dl
+JOIN person p
+ON dl.id=p.license_id
+JOIN get_fit_now_member gfn
+on p.id=gfn.person_id
+where dl.plate_number like '%H42W%'
+
+Solution: The murder was committed by Jeremy Bowers aka Jay bow
+
+Congrats, you found the murderer! But wait, there's more... If you think you're up for a challenge,
+ try querying the interview transcript of the murderer to find the real villain behind this crime. 
+ If you feel especially confident in your SQL skills, try to complete this final step with no more than 2 queries.
+  Use this same INSERT statement with your new suspect to check your answer
+
+Interview of jay bow: 
+'I was hired by a woman with a lot of money. I don't know her name but I know she's around 5'5" (65")
+ or 5'7" (67"). She has red hair and she drives a Tesla Model S. I know that she attended 
+ the SQL Symphony Concert 3 times in December 2017.'
+
+
+ -----------------------------------------------------------------
+
+ SELECT*, 
+p.name
+
+SELECT*, 
+p.name
+
+FROM person p
+JOIN drivers_license dl
+ON p.license_id = dl.id
+JOIN income inc
+ON p.ssn = inc.ssn
+JOIN facebook_event_checkin fa
+ON p.id= fa.person_id
+WHERE
+dl.car_make = 'Tesla'
+AND dl.car_model = 'Model S'
+AND dl.gender = 'female'
+AND dl.height BETWEEN 65 and 67
+AND hair_color = 'red'
+AND fa.event_name = 'SQL Symphony Concert'
+AND fa.date like '201712%'
